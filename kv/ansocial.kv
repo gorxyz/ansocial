@@ -1,0 +1,217 @@
+ScreenManager:
+	id: screen_manager
+	Screen:
+		name: "login"
+		orientation: 'vertical'
+		
+		FitImage:
+			id: black_a
+			source: "images/black.png"
+
+		MDTextField:
+			id: phone 
+			hint_text: "Phone Number"
+			#current_hint_text_color: "#00ff00"
+			size_hint: 0.5,None
+			multiline: False
+			color_mode: 'custom'
+			font_name: 'font/terminess.ttf'
+			fonts_size: 17
+			foreground_color: (0,1,0,1)
+			background_color: (0,0,0,1)
+			line_color_focus: "#00ff00"
+			line_color_normal: "#00ff00"
+			pos_hint: {"center_x" : 0.5, "center_y" : 0.6}
+			on_focus: True
+
+		MDTextField:
+			id: api_id
+			size_hint: 0.5,None
+			hint_text: "Api ID"
+			multiline: False
+			color_mode: 'custom'
+			font_name: 'font/terminess.ttf'
+			font_size: 17
+			foreground_color: (0,1,0,1)
+			background_color: (0,0,0,1)
+			line_color_focus: '#00ff00'
+			line_color_normal: '#00ff00'
+			pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+
+		MDTextField:
+			id: api_hash
+			hint_text: "Api Hash"
+			size_hint: 0.5,None
+			multiline: False
+			color_mode: 'custom'
+			font_name: 'font/terminess.ttf'
+			font_size: 17
+			foreground_color: (0,1,0,1)
+			background_color: (0,0,0,1)
+			line_color_focus: '#00ff00'
+			line_color_normal: '#00ff00'
+			pos_hint: {"center_x" : 0.5, "center_y" : 0.4}
+
+						
+
+		MDFillRoundFlatButton:
+		    id: login 
+		    text: "[color=#000000]LOGIN[/color]"
+		    font_size: 15
+		    md_text_color:(0,1,0,1) 
+		    text_color: (1,0,0,1)
+		    pos_hint: {"center_x": 0.5, "center_y": 0.25}
+		    font_name: 'font/terminess.ttf'
+		    md_bg_color: (0,1,0,1)
+		    size_hint: 0.2,None
+		    on_release: app.login()
+		
+		MDIconButton:
+			id: get_api
+			pos_hint: {"center_x" : 0.8, "center_y" : 0.1}
+			icon: 'images/api.png'
+			user_font_size: "42sp"
+			on_release: app.get_api()
+
+		MDIconButton:
+			id: github
+			icon: "images/github.png"
+			pos_hint: {"center_x" : 0.2, "center_y" : 0.1}
+			#user_font_size: "42sp"
+			on_release: app.github()
+	Screen:
+		name: "verification"
+		orientation: "vertical"
+
+		FitImage: 
+			id: black_f
+			source: 'images/black.png'
+
+		MDTextField:
+			id: verify_code
+			size_hint: 0.5,None
+			multiline: False
+			hint_text: "Verification Code"
+			color: 'custom'
+			color_mode: 'custom'
+			font_name: "font/terminess.ttf" 
+			font_size: 17 
+			foreground_color: (0, 1, 0, 1)
+			background_color: (0, 0, 0, 1)
+			line_color_focus: "#00ff00"
+			line_color_normal: "#00ff00"
+			pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+			on_focus: True
+
+		MDFillRoundFlatButton:
+			id: verify 
+			text: "[color=#000000]VERIFY[/color]"
+			font_size: 15
+			md_text_color:(0,1,0,1) 
+			text_color: (1,0,0,1)
+			pos_hint: {"center_x": 0.5, "center_y": 0.25}
+			font_name: 'font/terminess.ttf'
+			md_bg_color: (0,1,0,1)
+			size_hint: 0.2,None
+			on_release: app.verify()
+
+	Screen:
+		name: "ansocial"
+		orientation: "vertical"
+
+		FitImage:
+			id: black_d
+			source: 'images/black.png'
+			
+		MDLabel:
+			id: sending_key
+			text: "[color=#00ff00]PLEASE WAIT SENDING ENCRYPTED KEY TO USER[/color]"
+			font_name: 'font/terminess.ttf'
+			font_size: 17
+			pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+			enable: False
+			markup: True
+
+
+		MDTextField:
+			id: search_user
+			size_hint: 0.6, None
+			pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+			font_name: 'font/terminess.ttf'
+			multiline: False
+			hint_text: "username id or phone"
+			color: 'custom'
+			color_mode: 'custom'
+			font_size: 17
+			foreground_color: (0,1,0,1)
+			background_color: (0,0,0,1)
+			line_color_focus: "#00ff00"
+			line_color_normal: "#00ff00"
+			on_focus: True
+
+		MDFillRoundFlatButton:
+			id: search
+			text: "[color=#000000]SEARCH[/color]"
+			font_size: 15
+			md_text_color: (0,1,0,1)
+			text_color: (1,0,0,1)
+			pos_hint: {"center_x": 0.5, "center_y": 0.4}
+			font_name: 'font/terminess.ttf'
+			md_bg_color: (0,1,0,1)
+			size_hint: 0.1,None
+			on_release: app.search()
+
+		MDTextField:
+			id: message 
+			size_hint: 0.8, None
+			pos_hint: {"center_x" : 0.43, "center_y" : 7.1}
+			font_name: 'font/terminess.ttf'
+			multiline: True 
+			color: 'custom'
+			color_mode: 'custom'
+			font_size: 17
+			foreground_color: (0,1,0,1)
+			background_color: (0,0,0,1)
+			line_color_focus: "#00ff00"
+			line_color_normal: "#00ff00"
+			on_focus: True
+
+		ScrollView:
+			id: scroll_chat
+			smooth_scroll_end: 1
+			do_scroll_x: False
+			do_scroll_y: True
+			size_hint: (0.9,0.8)
+			pos_hint: {"center_x" : 0.5, "center_y" : 8.85}
+
+			MDLabel:
+				id: chat_history
+				font_size: 17
+				markup: True
+				font_name: 'font/terminess.ttf'
+
+		MDFillRoundFlatButton:
+			id: send 
+			text: "[color=#000000]SEND[/color]"
+			font_size: 14
+			md_text_color:(0,1,0,1) 
+			text_color: (1,0,0,1)
+			pos_hint: {"center_x": 0.91, "center_y": 7.1}
+			font_name: 'font/terminess.ttf'
+			md_bg_color: (0,1,0,1)
+			size_hint: 0.1,None
+			on_release: app.send_message() 
+
+		MDFillRoundFlatButton:
+			id: receive 
+			text: "[color=#000000]RECEIVE[/color]"
+			font_size: 14
+			md_text_color:(0,1,0,1) 
+			text_color: (1,0,0,1)
+			pos_hint: {"center_x": 0.91, "center_y": 2.2}
+			font_name: 'font/terminess.ttf'
+			md_bg_color: (0,1,0,1)
+			size_hint: 0.1,None
+			on_release: app.receive_message()
+
+

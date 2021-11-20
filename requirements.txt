@@ -1,0 +1,9 @@
+kivymd
+kivy
+datetime
+asyncio
+telethon
+pycrypto
+pycryptodome
+
+
