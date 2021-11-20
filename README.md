@@ -5,7 +5,7 @@ Tested only on Linux
 ## Installation
 ### Clone Repo
 ```sh
-git clone https://www.github.com/hasanxietyha/Ansocial
+git clone https://www.github.com/sudurraaa/Ansocial.git
 ```
 ```sh
 cd Ansocial
