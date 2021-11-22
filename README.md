@@ -1,6 +1,5 @@
 # ᴛᴇʟᴇɢʀᴀᴍ ᴇɴᴄʀʏᴘᴛᴇᴅ ᴄʜᴀᴛ ᴀᴘᴘ LINUX/WINDOWS/ᴀɴᴅʀᴏɪᴅ Python/Kivymd
-Working only login,verify,search,send message functions<br>
-Tested only on Linux
+!TESTED ONLY ON LINUX
 
 ## Installation
 ### Clone Repo
