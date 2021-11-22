@@ -19,11 +19,8 @@ python3 ansocial.py
 ```
 ## How to get Telegram Api
 ### Auth
-<a href="https://my.telegram.org/auth">Telegram API</a>
+<a href="https://my.telegram.org/auth">https://my.telegram.org/auth</a>
 
 ### FAQ
-```sh
-https://telegram.org/faq
-```
-# Wait for next updates and build guide 
+<a href="https://telegram.org/faq">https://telegram.org/faq"</a>
 
