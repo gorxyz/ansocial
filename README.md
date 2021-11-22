@@ -22,5 +22,5 @@ python3 ansocial.py
 <a href="https://my.telegram.org/auth">https://my.telegram.org/auth</a>
 
 ### FAQ
-<a href="https://telegram.org/faq">https://telegram.org/faq"</a>
+<a href="https://telegram.org/faq">https://telegram.org/faq</a>
 
