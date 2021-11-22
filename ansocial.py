@@ -76,9 +76,11 @@ class Ansocial(MDApp):
             toast("no verification code founded")
     
     def search(self):
-        self.screen.ids.sending_key.enable = False 
         try:
             #self.client.send_file(self.screen.ids.username_text.text, public_key)
+            self.screen.ids.search_user.opacity = 0
+            self.screen.ids.search.opacity = 0
+            self.screen.ids.sending_key.opacity = 1 
             self.generate_key()
             self.screen.ids.sending_key.enable = True
             self.client.send_file(self.screen.ids.search_user.text, f'{self.friend_id}.pem')
@@ -86,44 +88,41 @@ class Ansocial(MDApp):
             received_key = self.client.get_messages(self.screen.ids.search_user.text, limit=4)
             for messages in received_key:
                 if messages.media is not None:
-                    self.client.download_media(message=messages, file='key/')
-                    for x in os.listdir('key/'):
-                        if x.endswith(str(self.client.get_me().id) + '.pem'):
-                            self.screen.ids.sending_key.text = '[color=00ff00]STARTING ENCRYPTED CHAT[/color]'
-                            time.sleep(1.5)
-                            self.screen.ids.sending_key.enable = False
-                            self.screen.ids.sending_key.opacity = 0
-                            self.screen.ids.sending_key.pos_hint = {"center_x" : 0.5, "center_y" : 5.5} 
-                            self.screen.ids.search.enable = False
-                            self.screen.ids.search.opacity = 0
-                            self.screen.ids.search.pos_hint = {"center_x" : 0.5, "center_y" : 6.6}
-                            self.screen.ids.search_user.enable = False
-                            self.screen.ids.search_user.opacity = 0 
+                    self.screen.ids.sending_key.text = '[color=00ff00]STARTING ENCRYPTED CHAT[/color]'
+                    time.sleep(2.5)
+                    self.client.download_media(str(self.client.get_me().id) + ".pem")
+                    self.screen.ids.sending_key.enable = False
+                    self.screen.ids.sending_key.opacity = 0
+                    self.screen.ids.search.enable = False
+                    self.screen.ids.search.opacity = 0
+                    self.screen.ids.search.pos_hint = {"center_x" : 0.5, "center_y" : 6.6}
+                    self.screen.ids.search_user.enable = False
+                    self.screen.ids.search_user.opacity = 0 
 
-                            self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
-                            self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
-                            self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
+                    self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
+                    self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
+                    self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
                             
-                            #threading.Thread(target=self.receive_message).start()
+                    #threading.Thread(target=self.receive_message).start()
 
         except ValueError:
             toast("user not founded")
-            self.screen.ids.sending_key.enable = False 
+            self.screen.ids.sending_key.opacity = 0
+            self.screen.ids.send.opacity = 1
+            self.screen.ids.search_user.opacity = 1
 
     def generate_key(self):
         self.friend_id = self.client.get_entity(self.screen.ids.search_user.text).id
         key = RSA.generate(2048)
         private_key = key.export_key()
-        private_key_out = open("key/private.pem", "wb")
-        private_key_out.write(private_key)
-        private_key_out.close()
+        with open("private.pem", "wb") as private_key_out:
+            private_key_out.write(private_key)
 
         public_key = key.public_key().export_key()
-        public_key_out = open("key/receiver.pem", "wb")
-        public_key_out.write(public_key)
-        public_key_out.close()
+        with open("receiver.pem", "wb") as public_key_out:
+            public_key_out.write(public_key)
 
-        os.rename("key/receiver.pem", str(self.friend_id) + '.pem') 
+        os.rename("receiver.pem", str(self.friend_id) + '.pem') 
 
     def send_message(self):
         me = self.client.get_me()
