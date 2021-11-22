@@ -18,11 +18,13 @@ for arg in "$@"; do
 		-e|--encode)
 			echo "starting encode folder clean"
 			shred -uz encode/*.mp3
+			shred -uz encode/*.bin
 			echo "encode folder clean finished"
 			;;
 		-d|--decode)
 			echo "starting decode folder clean"
 			shred -uz decode/*.mp3
+			shred -uz decode/*.bin
 			echo "decode folder clean finished"
 		;;
 		-a|--all)
@@ -30,6 +32,8 @@ for arg in "$@"; do
 			shred -uz key/*.pem
 			shred -uz sessions/*.session
 			shred -uz sessions/*.session-journal
+			shred -uz encode/*.bin
+			shred -uz decode/*.bin
 			shred -uz encode/*.mp3
 			shred -uz decode/*.mp3
 			echo "full clean finished"

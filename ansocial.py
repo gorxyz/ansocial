@@ -77,7 +77,6 @@ class Ansocial(MDApp):
     
     def search(self):
         try:
-            #self.client.send_file(self.screen.ids.username_text.text, public_key)
             self.screen.ids.search_user.opacity = 0
             self.screen.ids.search.opacity = 0
             self.screen.ids.sending_key.opacity = 1 
@@ -88,22 +87,23 @@ class Ansocial(MDApp):
             received_key = self.client.get_messages(self.screen.ids.search_user.text, limit=4)
             for messages in received_key:
                 if messages.media is not None:
-                    self.screen.ids.sending_key.text = '[color=00ff00]STARTING ENCRYPTED CHAT[/color]'
-                    time.sleep(2.5)
-                    self.client.download_media(str(self.client.get_me().id) + ".pem")
-                    self.screen.ids.sending_key.enable = False
-                    self.screen.ids.sending_key.opacity = 0
-                    self.screen.ids.search.enable = False
-                    self.screen.ids.search.opacity = 0
-                    self.screen.ids.search.pos_hint = {"center_x" : 0.5, "center_y" : 6.6}
-                    self.screen.ids.search_user.enable = False
-                    self.screen.ids.search_user.opacity = 0 
+                    if messages.file.name.startswith(str(self.client.get_me().id) + ".pem"):
+                        self.screen.ids.sending_key.text = '[color=00ff00]STARTING ENCRYPTED CHAT[/color]'
+                        time.sleep(2.5)
+                        self.client.download_media(message=messages)
+                        self.screen.ids.sending_key.enable = False
+                        self.screen.ids.sending_key.opacity = 0
+                        self.screen.ids.search.enable = False
+                        self.screen.ids.search.opacity = 0
+                        self.screen.ids.search.pos_hint = {"center_x" : 0.5, "center_y" : 6.6}
+                        self.screen.ids.search_user.enable = False
+                        self.screen.ids.search_user.opacity = 0 
 
-                    self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
-                    self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
-                    self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
-                            
-                    #threading.Thread(target=self.receive_message).start()
+                        self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
+                        self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
+                        self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
+                                
+                        #threading.Thread(target=self.receive_message).start()
 
         except ValueError:
             toast("user not founded")
@@ -134,13 +134,17 @@ class Ansocial(MDApp):
                 my_username = me.first_name
             
         try:
-            self.encoding_message(self.screen.ids.message.text)
-            #threading.Thread(target=self.encode_message).start() 
-            #self.client.send_file(self.screen.ids.search_user.text, 'tskul.jpg')
-            self.screen.ids.chat_history.text += f'[color=#00ff00]{my_username}[/color][color=#ffffff]: {self.screen.ids.message.text}[/color]\n[color=#00ff00][size=11]{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}[/size][/color]\n' 
-            self.screen.ids.message.text = ''
+            if self.screen.ids.message.text != '':
+                self.encoding_message(self.screen.ids.message.text)
+                #threading.Thread(target=self.encode_message).start() 
+                #self.client.send_file(self.screen.ids.search_user.text, 'tskul.jpg')
+                self.screen.ids.chat_history.text += f'[color=#00ff00]{my_username}[/color][color=#ffffff]: {self.screen.ids.message.text}[/color]\n[color=#00ff00][size=11]{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}[/size][/color]\n' 
+                self.screen.ids.message.text = ''
+            else:
+                toast("cant send empty message")
         except ValueError:
             toast("user not founded")
+            self.screen.ids.sending_key.opacity = 0 
             self.screen.ids.search.disabled = False
             self.screen.ids.search.opacity = 1
             self.screen.ids.search_user.disabled = False
@@ -158,10 +162,10 @@ class Ansocial(MDApp):
         encoded_message_title = ""
         for _ in range(40):
             encoded_message_title += random.choice(chars)
-        encoded_message_title += '.mp3'
+        encoded_message_title += '.bin'
 
         encoded_file = open(f'encode/{encoded_message_title}', 'wb')
-        recipient_key = RSA.import_key(open(f'key/{my_key}').read())
+        recipient_key = RSA.import_key(open(f'{my_key}').read())
         session_key = get_random_bytes(16)
         
         cipher_rsa = PKCS1_OAEP.new(recipient_key)
@@ -184,7 +188,7 @@ class Ansocial(MDApp):
                     self.decode_message_title = ""
                     for _ in range(40):
                         decode_message_title += random.choice(chars)
-                    self.decode_message_title += '.mp3'
+                    self.decode_message_title += '.bin'
                     self.decoding_message(self.decode_message_title)
 
     def decoding_message(self, decode):
