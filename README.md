@@ -19,7 +19,7 @@ python3 ansocial.py
 ```
 ## How to get Telegram Api
 ### Auth
-<a href="https://my.telegram.org/auth"></a>
+<a href="https://my.telegram.org/auth">Telegram API</a>
 
 ### FAQ
 ```sh
