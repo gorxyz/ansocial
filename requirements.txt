@@ -3,7 +3,6 @@ kivy
 datetime
 asyncio
 telethon
-pycrypto
 pycryptodome
 
 

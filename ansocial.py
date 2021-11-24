@@ -6,6 +6,7 @@ import random
 import threading
 import webbrowser
 from datetime import datetime
+from multiprocessing import Process
 
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
@@ -63,6 +64,7 @@ class Ansocial(MDApp):
         except HashInvalidError:
             toast("Hash is invalid")
 
+
     def verify(self):
         if self.screen.ids.verify_code.text != '':
             try:
@@ -77,37 +79,55 @@ class Ansocial(MDApp):
     
     def search(self):
         try:
+            friend_id = self.client.get_entity(self.screen.ids.search_user.text).id
             self.screen.ids.search_user.opacity = 0
             self.screen.ids.search.opacity = 0
             self.screen.ids.sending_key.opacity = 1 
-            self.generate_key()
-            self.screen.ids.sending_key.enable = True
-            self.client.send_file(self.screen.ids.search_user.text, f'{self.friend_id}.pem')
+            generate_thread = Process(target=self.generate_key)
+            generate_thread.start()
+            generate_thread.join()
+            self.client.send_file(self.screen.ids.search_user.text, f'{friend_id}.pem')
             self.screen.ids.sending_key.text = "[color=00ff01]KEY SENDED,WAITING KEY[/color]"
             received_key = self.client.get_messages(self.screen.ids.search_user.text, limit=4)
             for messages in received_key:
                 if messages.media is not None:
                     if messages.file.name.startswith(str(self.client.get_me().id) + ".pem"):
-                        self.screen.ids.sending_key.text = '[color=00ff00]STARTING ENCRYPTED CHAT[/color]'
-                        time.sleep(2.5)
-                        self.client.download_media(message=messages)
-                        self.screen.ids.sending_key.enable = False
-                        self.screen.ids.sending_key.opacity = 0
-                        self.screen.ids.search.enable = False
-                        self.screen.ids.search.opacity = 0
-                        self.screen.ids.search.pos_hint = {"center_x" : 0.5, "center_y" : 6.6}
-                        self.screen.ids.search_user.enable = False
-                        self.screen.ids.search_user.opacity = 0 
+                        for x in os.listdir('key/'):
+                            if x == f'{self.client.get_me().id}.pem':
+                                self.screen.ids.search.enable = False
+                                self.screen.ids.search.opacity = 0
+                                self.screen.ids.search_user.enable = False
+                                self.screen.ids.search_user.opacity = 0 
 
-                        self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
-                        self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
-                        self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
-                                
-                        #threading.Thread(target=self.receive_message).start()
+                                self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
+                                self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
+                                self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
+
+                            else:
+                                self.screen.ids.sending_key.text = '[color=00ff00]STARTING ENCRYPTED CHAT[/color]'
+                                time.sleep(2)
+                                self.client.download_media(message=messages,file='key/')
+                                self.screen.ids.sending_key.enable = False
+                                self.screen.ids.sending_key.opacity = 0
+                                self.screen.ids.search.enable = False
+                                self.screen.ids.search.opacity = 0
+                                self.screen.ids.search_user.enable = False
+                                self.screen.ids.search_user.opacity = 0 
+
+                                self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 0.1}
+                                self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 0.1} 
+                                self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 0.85}
+                                        
+                                #thread = Process(target=self.receive_message)
+                                #thread.start()
+                                #thread.join()
+                                #Clock.schedule_interval(self.receive_message, 2.5)
+                                #threading.Thread(target=self.receive_message).start()
 
         except ValueError:
             toast("user not founded")
             self.screen.ids.sending_key.opacity = 0
+            self.screen.ids.search.opacity = 1
             self.screen.ids.send.opacity = 1
             self.screen.ids.search_user.opacity = 1
 
@@ -115,7 +135,7 @@ class Ansocial(MDApp):
         self.friend_id = self.client.get_entity(self.screen.ids.search_user.text).id
         key = RSA.generate(2048)
         private_key = key.export_key()
-        with open("private.pem", "wb") as private_key_out:
+        with open("key/private.pem", "wb") as private_key_out:
             private_key_out.write(private_key)
 
         public_key = key.public_key().export_key()
@@ -126,18 +146,13 @@ class Ansocial(MDApp):
 
     def send_message(self):
         me = self.client.get_me()
-        my_username = str(me.username)
+        my_username = me.username
         if my_username == 'None':
-            if me.first_name == 'None':
-                my_username = me.phone
-            else:
-                my_username = me.first_name
-            
+            my_username = me.phone
         try:
             if self.screen.ids.message.text != '':
                 self.encoding_message(self.screen.ids.message.text)
-                #threading.Thread(target=self.encode_message).start() 
-                #self.client.send_file(self.screen.ids.search_user.text, 'tskul.jpg')
+                #threading.Thread(target=self.encode_message, args=(self.screen.ids.message.text,)).start() 
                 self.screen.ids.chat_history.text += f'[color=#00ff00]{my_username}[/color][color=#ffffff]: {self.screen.ids.message.text}[/color]\n[color=#00ff00][size=11]{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}[/size][/color]\n' 
                 self.screen.ids.message.text = ''
             else:
@@ -151,13 +166,11 @@ class Ansocial(MDApp):
             self.screen.ids.search_user.opacity = 1
             self.screen.ids.message.pos_hint = {"center_x" : 0.43, "center_y" : 3.1}
             self.screen.ids.scroll_chat.pos_hint = {"center_x" : 0.5, "center_y" : 8.85}
-            self.screen.ids.send.pos_hint = {"center_x" : 0.91, "center_y" : 5.1}
             self.screen.ids.receive.pos_hint = {"center_x": 0.91, "center_y": 5.18}
 
     def encoding_message(self, message):
         my_id = self.client.get_me().id
         my_key = str(my_id) + '.pem'
-
         chars = 'abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
         encoded_message_title = ""
         for _ in range(40):
@@ -165,31 +178,33 @@ class Ansocial(MDApp):
         encoded_message_title += '.bin'
 
         encoded_file = open(f'encode/{encoded_message_title}', 'wb')
-        recipient_key = RSA.import_key(open(f'{my_key}').read())
+        recipient_key = RSA.import_key(open(f'key/{my_key}').read())
         session_key = get_random_bytes(16)
         
         cipher_rsa = PKCS1_OAEP.new(recipient_key)
         enc_session_key = cipher_rsa.encrypt(session_key)
         
         cipher_aes = AES.new(session_key, AES.MODE_EAX)
-        ciphertext, tag = cipher_aes.encrypt_and_digest(self.screen.ids.message.text)
+        ciphertext, tag = cipher_aes.encrypt_and_digest(str(message).encode("utf-8"))
         [ encoded_file.write(x) for x in (enc_session_key, cipher_aes.nonce, tag, ciphertext) ]
         encoded_file.close()
 
-        self.client.send_file(self.screen.ids.search_user.text, f'encode/{encoded_message_title}', voice_note=True)
+        self.client.send_file(self.screen.ids.search_user.text, f'encode/{encoded_message_title}')
 
 
     def receive_message(self):
         self.recieved_message = self.client.get_messages(self.screen.ids.search_user.text, limit=4)
-        while True:
-            for message in self.received_message:
-                if message.media is not None:
-                    chars = 'abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-                    self.decode_message_title = ""
-                    for _ in range(40):
-                        decode_message_title += random.choice(chars)
-                    self.decode_message_title += '.bin'
-                    self.decoding_message(self.decode_message_title)
+        for message in self.received_message:
+            if message.media is not None:
+                chars = 'abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+                self.decode_message_title = ""
+                for _ in range(40):
+                    decode_message_title += random.choice(chars)
+                self.decode_message_title += '.bin'
+                #thread = Process(target=self.decode_message, args=self.decode_message_title)
+                #thread.start()
+                #thread.join()
+                self.decoding_message(self.decode_message_title)
 
     def decoding_message(self, decode):
         self.client.download_media(decode, file='decode/')
