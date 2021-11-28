@@ -12,7 +12,8 @@ ScreenManager:
 			id: phone 
 			hint_text: "Phone Number"
 			#current_hint_text_color: "#00ff00"
-			size_hint: 0.5,None
+			text_size: self.size
+			size_hint: .5,None
 			multiline: False
 			color_mode: 'custom'
 			font_name: 'font/terminess.ttf'
@@ -26,6 +27,7 @@ ScreenManager:
 
 		MDTextField:
 			id: api_id
+			text_size: self.size
 			size_hint: 0.5,None
 			hint_text: "Api ID"
 			multiline: False
@@ -40,6 +42,7 @@ ScreenManager:
 
 		MDTextField:
 			id: api_hash
+			text_size: self.size
 			hint_text: "Api Hash"
 			size_hint: 0.5,None
 			multiline: False
@@ -60,6 +63,7 @@ ScreenManager:
 		    font_size: 15
 		    md_text_color:(0,1,0,1) 
 		    text_color: (1,0,0,1)
+			text_size: self.size
 		    pos_hint: {"center_x": 0.5, "center_y": 0.25}
 		    font_name: 'font/terminess.ttf'
 		    md_bg_color: (0,1,0,1)
@@ -68,6 +72,7 @@ ScreenManager:
 		
 		MDIconButton:
 			id: get_api
+			text_size: self.size
 			pos_hint: {"center_x" : 0.8, "center_y" : 0.1}
 			icon: 'images/api.png'
 			user_font_size: "42sp"
@@ -90,6 +95,7 @@ ScreenManager:
 		MDTextField:
 			id: verify_code
 			size_hint: 0.5,None
+			text_size: self.size
 			multiline: False
 			hint_text: "Verification Code"
 			color: 'custom'
@@ -106,6 +112,7 @@ ScreenManager:
 		MDFillRoundFlatButton:
 			id: verify 
 			text: "[color=#000000]VERIFY[/color]"
+			text_size: self.size
 			font_size: 15
 			md_text_color:(0,1,0,1) 
 			text_color: (1,0,0,1)
@@ -126,8 +133,11 @@ ScreenManager:
 		MDLabel:
 			id: sending_key
 			text: "[color=#00ff00]PLEASE WAIT SENDING ENCRYPTED KEY TO USER[/color]"
+            halign: "center"
+            valign: "middle"
 			font_name: 'font/terminess.ttf'
 			pos_hint_y: {"center_y" : 0.5}
+			text_size: self.size
 			pos_hint_x: {"center_x" : 0.7}
 			markup: True
 
@@ -139,6 +149,7 @@ ScreenManager:
 			font_name: 'font/terminess.ttf'
 			multiline: False
 			hint_text: "username id or phone"
+			text_size: self.size
 			color: 'custom'
 			color_mode: 'custom'
 			font_size: 17
@@ -151,6 +162,7 @@ ScreenManager:
 		MDFillRoundFlatButton:
 			id: search
 			text: "[color=#000000]SEARCH[/color]"
+			text_size: self.size
 			font_size: 15
 			md_text_color: (0,1,0,1)
 			text_color: (1,0,0,1)
@@ -165,6 +177,7 @@ ScreenManager:
 			size_hint: 0.8, None
 			pos_hint: {"center_x" : 0.43, "center_y" : 7.1}
 			font_name: 'font/terminess.ttf'
+			text_size: self.size
 			multiline: True 
 			color: 'custom'
 			color_mode: 'custom'
@@ -185,13 +198,17 @@ ScreenManager:
 
 			MDLabel:
 				id: chat_history
+				text_size: self.size
 				font_size: 17
+				halign: "center"
+				valign: "middle"
 				markup: True
 				font_name: 'font/terminess.ttf'
 
 		MDFillRoundFlatButton:
 			id: send 
 			text: "[color=#000000]SEND[/color]"
+			text_size: self.size
 			font_size: 14
 			md_text_color:(0,1,0,1) 
 			text_color: (1,0,0,1)
@@ -204,6 +221,7 @@ ScreenManager:
 		MDFillRoundFlatButton:
 			id: receive 
 			text: "[color=#000000]RECEIVE[/color]"
+			text_size: self.size
 			font_size: 14
 			md_text_color:(0,1,0,1) 
 			text_color: (1,0,0,1)
